@@ -1,0 +1,296 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger Petstore - OpenAPI 3.0",
+    "description": "This is a API spec for internal databases's replication and backup status.",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "tags": [
+    {
+      "name": "rds",
+      "description": "Everything about your internal infra RDS",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "paths": {
+    "/users/signin": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "signin users",
+        "description": "Successful operation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSigninReturn"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rds/replications/{ipv4}": {
+      "get": {
+        "tags": [
+          "rds"
+        ],
+        "summary": "Read the databases replication status which will return replcated databases only",
+        "description": "Read all databases replication status",
+        "operationId": "getByIPV4",
+        "parameters": [
+          {
+            "name": "ipv4",
+            "in": "path",
+            "description": "IP address version 4",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplicationsGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rds/replications": {
+      "get": {
+        "tags": [
+          "rds"
+        ],
+        "summary": "Read the databases replication status which will return replcated databases only",
+        "description": "Read all databases replication status",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplicationsGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "rds"
+        ],
+        "summary": "",
+        "description": "",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplicationsPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplicationResponsePost"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ReplicationsGet": {
+        "type": "object",
+        "properties": {
+          "ip_address": {
+            "type": "string"
+          },
+          "server_name": {
+            "type": "string"
+          },
+          "replicationStatus": {
+            "type": "string",
+            "description": "status of replication",
+            "example": "success",
+            "enum": [
+              "success",
+              "failure"
+            ]
+          },
+          "dateTime": {
+            "type": "string",
+            "description": "date status replcations",
+            "format": "date-time"
+          },
+          "message": {
+            "type": "string",
+            "description": "replcation status textual info"
+          }
+        }
+      },
+      "ReplicationsPost": {
+        "type": "object",
+        "properties": {
+          "ipAddress": {
+            "type": "string"
+          },
+          "nameOfServer": {
+            "type": "string"
+          },
+          "dateTime": {
+            "type": "string",
+            "description": "date status replcations",
+            "format": "date-time"
+          },
+          "slaveSqlRunning": {
+            "type": "string",
+            "description": "replcation status textual info",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "example": "yes"
+          },
+          "slaveIoRunning": {
+            "type": "string",
+            "description": "replcation status textual info",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "example": "yes"
+          },
+          "error": {
+            "type": "string",
+            "description": "Replication error information"
+          }
+        }
+      },
+      "UserSignin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "UserSigninReturn": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "date status replcations"
+          },
+          "message": {
+            "type": "Record inserted",
+            "description": "info about request"
+          },
+          "error": {
+            "type": "string",
+            "description": "error information about the request"
+          }
+        }
+      },
+      "ReplicationResponsePost": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "date status replcations"
+          },
+          "message": {
+            "type": "Record inserted",
+            "description": "info about request"
+          },
+          "error": {
+            "type": "string",
+            "description": "error information about the request"
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ]
+  }
+}
